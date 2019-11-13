@@ -28,11 +28,28 @@ class User extends Model
 
             $user->setData($data);
 
-            $_SESSION[User::SESSION] = $user.getValues()
+            $_SESSION[User::SESSION] = $user->getValues();
 
-            exit;
+            return $user;
         } else {
             throw new \Exception("Ususário inexisente ou senha inválida", 1);
         }
+    }
+    public static function verifyLogin($inadmin = true)
+    {
+        if (
+            !isset($_SESSION[User::SESSION]) ||
+            !$_SESSION[User::SESSION] ||
+            !(int) $_SESSION[User::SESSION]["iduser"] > 0 ||
+            (bool) $_SESSION[User::SESSION]["inadmin"] !== $inadmin
+        ) {
+            header("Location: /admin/login");
+            exit;
+        }
+    }
+
+    public static function logout()
+    {
+        $_SESSION[User::SESSION] = NULL;
     }
 }
